@@ -2,13 +2,51 @@
 
 Simple Python class to help you with the integration of the Paybox payment system
 
-## Requirements :
+## Requirements
 
 Only the standard library if you intend not to verify the Paybox response
 
 M2Crypo otherwise (recommended)
 
-## Methods :
+## Usage
+
+Calling Paybox from a Django view
+
+    from Paybox import Transaction
+
+    transaction = Transaction(
+		 PBX_TOTAL=PBX_TOTAL,
+		 PBX_PORTEUR=PBX_PORTEUR,
+		 PBX_TIME=PBX_TIME,
+		 PBX_CMD=PBX_CMD
+		)
+		
+	if production:
+	 action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+	else:
+	 action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+
+	form_values = transaction.post_to_paybox()
+
+	return render(request, 'payment.html', {
+			'action': action,
+			'mandatory': form_values['mandatory'],
+			'accessory': form_values['accessory']
+		})
+
+Receiving an IPN in a Django view
+
+    from Paybox import Transaction
+
+    transaction = Transaction()
+    notification = transaction.verify_notification(response=request.get_full_path(), reference='', total='')
+
+    reference = notification.reference
+    authorization = notification.authorization
+
+    return HttpResponse('')
+
+## Methods
 
 ### post_to_paybox()
 
