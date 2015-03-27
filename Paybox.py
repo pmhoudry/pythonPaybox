@@ -139,3 +139,5 @@ class Transaction:
 		sha1_hash = hashlib.sha1(message_without_sign).digest()
 		# and verify the signature
 		assert pubkey.verify(data=sha1_hash, signature=binary_signature), 'Certificate Verification Failed'
+
+		return True
