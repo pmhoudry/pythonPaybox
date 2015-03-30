@@ -4,11 +4,15 @@ Simple Python class to help you with the integration of the Paybox payment syste
 
 ## Requirements
 
-Only the standard library if you intend not to verify the Paybox response
+Only the standard library if you intend not to verify the authenticity of the Paybox response via its public key
 
 M2Crypo otherwise (recommended)
 
+    sudo pip install M2Crypto
+
 ## Usage
+
+Complete the **settings-example.py** file and rename it **settings.py**
 
 Calling Paybox from a Django view
 
