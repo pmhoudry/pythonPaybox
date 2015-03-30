@@ -41,9 +41,10 @@ Receiving an IPN in a Django view
     transaction = Transaction()
     notification = transaction.verify_notification(response=request.get_full_path(), reference='', total='')
 
-    reference = notification.reference
-    authorization = notification.authorization
-
+    reference = notification['reference']
+    authorization = notification['authorization']
+    
+    # Paybox Requires a blank 200 response
     return HttpResponse('')
 
 ## Methods
