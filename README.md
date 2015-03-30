@@ -83,15 +83,17 @@ Receiving an IPN in a Django view
 
 4. Your server constructs an html page which redirects the customer to the Paybox website via an hidden form (variables are sent in POST, and you may trigger the redirection automatically via javascript)
 	
-	-> post_to_paybox()
-	-> construct_html_form(production=False)
+> post_to_paybox()
+
+> construct_html_form(production=False)
 
 5. Your customer pays, and Paybox send a confirmation to your server. You verify the authenticity of the Paybox callback request, set payment to True and send your customer a thank you email.
 
 To set your IPN url you have to contact customer support. Your ipn url MUST NOT trigger any sort of redirection. Beware of 301 between http:// and http://www.
 
-	-> verify_notification(response, reference, total, production=False, verify_certificate=True)
-	-> verify_certificate(message, signature)
+> verify_notification(response, reference, total, production=False, verify_certificate=True)
+
+> verify_certificate(message, signature)
 
 6. The customer is redirected by the Paybox server on a confirmation page on your server. You may configure this in the Paybox admin. Paybox returns a few variables. Don't do any sort of validation on those urls.
 
