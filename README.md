@@ -12,7 +12,7 @@ M2Crypo otherwise (recommended)
 
 ## Usage
 
-Complete the **settings-example.py** file and rename it **settings.py**
+Complete the **settings_example.py** file and rename it **settings.py**
 
 Calling Paybox from a Django view
 
