@@ -73,7 +73,7 @@ Receiving an IPN in a Django view
     # Paybox Requires a blank 200 response
     return HttpResponse('')
 
-## Understand the Paybox Flow
+## Understanding the Paybox Flow
 
 1. The customer comes to your website and add an item to his basket
 
