@@ -97,20 +97,20 @@ To set your IPN url you have to contact customer support. Your ipn url MUST NOT 
 
 ## Paybox installation
 
-# Mandatory variables to be sent by the customer computer with the payment request :
+### Mandatory variables to be sent by the customer computer with the payment request :
 
-PBX_SITE (given by Paybox)
-PBX_RANG (Paybox gives you a three digit number, take the last two)
-PBX_IDENTIFIANT (given by Paybox)
-PBX_TOTAL (in cents. 10$ = 1000)
-PBX_DEVISE (number, 978 for €)
-PBX_PORTEUR (email address of the customer)
-PBX_RETOUR (list of variables that paybox will return with the payment confirmation)
-PBX_HASH (How you've keyed-hashed your message. SHA512 in this app)
-PBX_TIME (ISO 8601 Format)
-PBX_HMAC 
+	PBX_SITE (given by Paybox)
+	PBX_RANG (Paybox gives you a three digit number, take the last two)
+	PBX_IDENTIFIANT (given by Paybox)
+	PBX_TOTAL (in cents. 10$ = 1000)
+	PBX_DEVISE (number, 978 for €)
+	PBX_PORTEUR (email address of the customer)
+	PBX_RETOUR (list of variables that paybox will return with the payment confirmation)
+	PBX_HASH (How you've keyed-hashed your message. SHA512 in this app)
+	PBX_TIME (ISO 8601 Format)
+	PBX_HMAC 
 
-# How to send a valid payment call to Paybox
+### How to send a valid payment call to Paybox
 
 1. Connect to http://preprod-admin.paybox.com to generate a valid secret key. Copy it in the settings of your app or any place SAFE. When in prod, generate a new secret key by going to http://admin.paybox.com
 
