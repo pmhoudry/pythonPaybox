@@ -69,6 +69,55 @@ Receiving an IPN in a Django view
     # Paybox Requires a blank 200 response
     return HttpResponse('')
 
+## Understand the Paybox Flow
+
+1. The customer comes to your website and add an item to his basket
+
+2. He creates an account and validates the purchase (or not but you may validate his email address before sending it to Paybox)
+
+3. The purchase is stored in your database, payment set to False (or whatever column you prefer)
+
+4. Your server constructs an html page which redirects the customer to the Paybox website via an hidden form (variables are sent in POST, and you may trigger the redirection automatically via javascript)
+	
+	-> post_to_paybox()
+	-> construct_html_form(production=False)
+
+5. Your customer pays, and Paybox send a confirmation to your server. You verify the authenticity of the Paybox callback request, set payment to True and send your customer a thank you email.
+
+To set your IPN url you have to contact customer support. Your ipn url MUST NOT trigger any sort of redirection. Beware of 301 between http:// and http://www.
+
+	-> verify_notification(response, reference, total, production=False, verify_certificate=True)
+	-> verify_certificate(message, signature)
+
+6. The customer is redirected by the Paybox server on a confirmation page on your server. You may configure this in the Paybox admin. Paybox returns a few variables. Don't do any sort of validation on those urls.
+
+## Paybox installation
+
+# Mandatory variables to be sent by the customer computer with the payment request :
+
+PBX_SITE (given by Paybox)
+PBX_RANG (Paybox gives you a three digit number, take the last two)
+PBX_IDENTIFIANT (given by Paybox)
+PBX_TOTAL (in cents. 10$ = 1000)
+PBX_DEVISE (number, 978 for €)
+PBX_PORTEUR (email address of the customer)
+PBX_RETOUR (list of variables that paybox will return with the payment confirmation)
+PBX_HASH (How you've keyed-hashed your message. SHA512 in this app)
+PBX_TIME (ISO 8601 Format)
+PBX_HMAC 
+
+# How to send a valid payment call to Paybox
+
+1. Connect to http://preprod-admin.paybox.com to generate a valid secret key. Copy it in the settings of your app or any place SAFE. When in prod, generate a new secret key by going to http://admin.paybox.com
+
+2. In the admin interface, define your redirection urls, and contact the support to set your ipn url
+
+3. Connect everything via your router or anything you're using.
+
+4. In case of trouble, verify that all your mandatory variables are valid. Especially SITE, RANG, IDENTIFIANT. The app constructs a valid redirection form if all your variables are ok.
+
+5. With corrects values for all the variables, the **method post_to_paybox()** constructs a HMAC that ensure the variables are transmitted unaltered to the Paybox server.
+
 ## Methods
 
 ### post_to_paybox()
