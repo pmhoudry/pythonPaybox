@@ -114,7 +114,7 @@ class Transaction:
 		if not production:
 			assert query['AU'][0] == "XXXXXX", "Incorrect Auto Code"
 		else:
-			assert query['AU'] == True, "Payment Refused"
+			if not query['AU'] == True: query['AU'] = "Payment Refused"
 
 		assert query['ER'][0] == "00000", self.ERRORS.get(query['ER'][0], "Unrecognized Error")
 		
