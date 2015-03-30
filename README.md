@@ -34,6 +34,28 @@ Calling Paybox from a Django view
 			'accessory': form_values['accessory']
 		})
 
+How to organise the variables in a template
+
+    <form method="POST" action="{{ action }}">
+	<input type="hidden" name="PBX_SITE" value="{{ mandatory.PBX_SITE }}">
+	<input type="hidden" name="PBX_RANG" value="{{ mandatory.PBX_RANG }}">
+	<input type="hidden" name="PBX_IDENTIFIANT" value="{{ mandatory.PBX_IDENTIFIANT }}">
+	<input type="hidden" name="PBX_TOTAL" value="{{ mandatory.PBX_TOTAL }}">
+	<input type="hidden" name="PBX_DEVISE" value="{{ mandatory.PBX_DEVISE }}">
+	<input type="hidden" name="PBX_CMD" value="{{ mandatory.PBX_CMD }}">
+	<input type="hidden" name="PBX_PORTEUR" value="{{ mandatory.PBX_PORTEUR }}">
+	<input type="hidden" name="PBX_RETOUR" value="{{ mandatory.PBX_RETOUR }}">
+	<input type="hidden" name="PBX_HASH" value="{{ mandatory.PBX_HASH }}">
+	<input type="hidden" name="PBX_TIME" value="{{ mandatory.PBX_TIME }}">
+	<input type="hidden" name="PBX_HMAC" value="{{ mandatory.hmac }}">
+	{% for name, value in accessory.items %}
+		{% if value %}
+			<input type="hidden" name="{{ name }}" value="{{ value }}">
+		{% endif %}
+	{% endfor %}
+	<input type="submit" value="Proceed to payment">
+</form>
+
 Receiving an IPN in a Django view
 
     from Paybox import Transaction
