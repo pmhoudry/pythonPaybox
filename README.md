@@ -1,6 +1,6 @@
 # python-Paybox
 
-Simple Python class to help you with the integration of the Paybox payment system
+Simple Python class to help you with the integration of the Paybox payment system (Paybox system, not Paybox direct)
 
 ## Requirements
 
