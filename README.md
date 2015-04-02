@@ -61,20 +61,20 @@ How to organise the variables in a Django template
 Receiving an Instant Payment Notification in a Django view
 
     def ipn(request):
-	    from Paybox import Transaction
+     from Paybox import Transaction
 	
-	    order = get_object_or_404(Order, order_reference=request.GET.get('RE'))
+     order = get_object_or_404(Order, order_reference=request.GET.get('RE'))
 	
-	    transaction = Transaction()
-	    notification = transaction.verify_notification(response_url=request.get_full_path(), order_total=order.total)
+     transaction = Transaction()
+     notification = transaction.verify_notification(response_url=request.get_full_path(), order_total=order.total)
 	
-	    order.payment = notification['success']	  	# Boolean
-	    order.payment_status = notification['status']   	# Paybox Status Message
-	    order.payment_auth_code = notification['auth_code'] # Authorization Code returned by Payment Center
-	    order.save()
+     order.payment = notification['success']	  	 # Boolean
+     order.payment_status = notification['status']   	 # Paybox Status Message
+     order.payment_auth_code = notification['auth_code'] # Authorization Code returned by Payment Center
+     order.save()
     
-	    # Paybox Requires a blank 200 response
-	    return HttpResponse('')
+     # Paybox Requires a blank 200 response
+     return HttpResponse('')
 
 ## Understanding the Paybox Flow
 
