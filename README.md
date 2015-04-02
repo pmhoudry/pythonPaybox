@@ -63,7 +63,7 @@ Receiving an Instant Payment Notification in a Django view
     def ipn(request):
      from Paybox import Transaction
 	
-     order = get_object_or_404(Order, order_reference=request.GET.get('RE'))
+     order = get_object_or_404(Order, reference=request.GET.get('RE'))
 	
      transaction = Transaction()
      notification = transaction.verify_notification(response_url=request.get_full_path(), order_total=order.total)
