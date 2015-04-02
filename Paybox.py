@@ -87,20 +87,20 @@ class Transaction:
 		accessory_fields = '\n'.join(["<input type='hidden' name='{0}' value='{1}'>".format(field, self.ACCESSORY[field]) for field in self.ACCESSORY if self.ACCESSORY[field]])
 
 		html = """<form method=POST action="{action}">
-					<input type="hidden" name="PBX_SITE" value="{mandatory[PBX_SITE]}">
-					<input type="hidden" name="PBX_RANG" value="{mandatory[PBX_RANG]}">
-					<input type="hidden" name="PBX_IDENTIFIANT" value="{mandatory[PBX_IDENTIFIANT]}">
-					<input type="hidden" name="PBX_TOTAL" value="{mandatory[PBX_TOTAL]}">
-					<input type="hidden" name="PBX_DEVISE" value="{mandatory[PBX_DEVISE]}">
-					<input type="hidden" name="PBX_CMD" value="{mandatory[PBX_CMD]}">
-					<input type="hidden" name="PBX_PORTEUR" value="{mandatory[PBX_PORTEUR]}">
-					<input type="hidden" name="PBX_RETOUR" value="{mandatory[PBX_RETOUR]}">
-					<input type="hidden" name="PBX_HASH" value="{mandatory[PBX_HASH]}">
-					<input type="hidden" name="PBX_TIME" value="{mandatory[PBX_TIME]}">
-					<input type="hidden" name="PBX_HMAC" value="{mandatory[hmac]}">
-					{accessory}
-					<input type="submit" value="Payer">
-				</form>"""
+				<input type="hidden" name="PBX_SITE" value="{mandatory[PBX_SITE]}">
+				<input type="hidden" name="PBX_RANG" value="{mandatory[PBX_RANG]}">
+				<input type="hidden" name="PBX_IDENTIFIANT" value="{mandatory[PBX_IDENTIFIANT]}">
+				<input type="hidden" name="PBX_TOTAL" value="{mandatory[PBX_TOTAL]}">
+				<input type="hidden" name="PBX_DEVISE" value="{mandatory[PBX_DEVISE]}">
+				<input type="hidden" name="PBX_CMD" value="{mandatory[PBX_CMD]}">
+				<input type="hidden" name="PBX_PORTEUR" value="{mandatory[PBX_PORTEUR]}">
+				<input type="hidden" name="PBX_RETOUR" value="{mandatory[PBX_RETOUR]}">
+				<input type="hidden" name="PBX_HASH" value="{mandatory[PBX_HASH]}">
+				<input type="hidden" name="PBX_TIME" value="{mandatory[PBX_TIME]}">
+				<input type="hidden" name="PBX_HMAC" value="{mandatory[hmac]}">
+				{accessory}
+				<input type="submit" value="Payer">
+			</form>"""
 
 		return html.format(action=action, mandatory=self.MANDATORY, accessory=accessory_fields)
 
