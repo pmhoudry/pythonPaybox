@@ -58,7 +58,7 @@ class Transaction:
 		}
 
 
-	def post_to_paybox(self):
+	def post_to_paybox(self, production=False):
 		self.MANDATORY['PBX_TIME'] = self.MANDATORY['PBX_TIME'].isoformat()
 		
 		# 978 = €
@@ -75,8 +75,17 @@ class Transaction:
 		binary_key = binascii.unhexlify(settings.SECRETKEY)
 		signature = hmac.new(binary_key, tosign, hashlib.sha512).hexdigest().upper()
 		self.MANDATORY['hmac'] = signature
+		
+		if production:
+			action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+		else:
+			action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
 
-		return {'mandatory': self.MANDATORY, 'accessory': self.ACCESSORY}
+		return {
+			'action'   : action,
+			'mandatory': self.MANDATORY,
+			'accessory': self.ACCESSORY,
+		}
 
 	def construct_html_form(self, production=False):
 		if production:
