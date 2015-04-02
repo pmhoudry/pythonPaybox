@@ -121,7 +121,7 @@ class Transaction:
 
 		return {
 			'success': True if query['RC'][0] == "00000" else False,
-			'status': self.RESPONSE_CODES.get(query['RC'][0].replace(s[len(s)-2], 'x'), self.RESPONSE_CODES.get(query['RC'][0], "unrecognized Error")),
+			'status': self.RESPONSE_CODES.get(query['RC'][0].replace(s[len(s)-2], 'x'), self.RESPONSE_CODES.get(query['RC'][0], "Unrecognized Response Code")),
 			'order_reference': query['CMD'],
 			'auth_code': query['AU'][0] if query['AU'][0] else False,
 		}
