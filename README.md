@@ -19,10 +19,10 @@ Calling Paybox from a Django view
     from Paybox import Transaction
 
     transaction = Transaction(
-		 PBX_TOTAL=PBX_TOTAL,
-		 PBX_PORTEUR=PBX_PORTEUR,
-		 PBX_TIME=PBX_TIME,
-		 PBX_CMD=PBX_CMD
+		 PBX_TOTAL='',	# total of the transaction, in cents (10€ == 1000) (int)
+		 PBX_PORTEUR='',# customer's email address
+		 PBX_TIME='',	# datetime object
+		 PBX_CMD=''	# order_reference (str)
 		)
 		
 	if production:
@@ -38,7 +38,7 @@ Calling Paybox from a Django view
 			'accessory': form_values['accessory']
 		})
 
-How to organise the variables in a template
+How to organise the variables in a Django template
 
     <form method="POST" action="{{ action }}">
 	<input type="hidden" name="PBX_SITE" value="{{ mandatory.PBX_SITE }}">
@@ -65,10 +65,11 @@ Receiving an IPN in a Django view
     from Paybox import Transaction
 
     transaction = Transaction()
-    notification = transaction.verify_notification(response=request.get_full_path(), reference='', total='')
+    notification = transaction.verify_notification(response=request.get_full_path(), order_reference='', order_total='')
 
-    reference = notification['reference']
-    authorization = notification['authorization']
+    success = notification['success']			# Boolean
+    status = notification['status']   		# Paybox Status Message
+    auth_code = notification['auth_code'] # Authorization Code returned by Payment Center
     
     # Paybox Requires a blank 200 response
     return HttpResponse('')
@@ -91,7 +92,7 @@ Receiving an IPN in a Django view
 
 To set your IPN url you have to contact customer support. Your ipn url MUST NOT trigger any sort of redirection. Beware of 301 between http:// and http://www.
 
-> verify_notification(response, reference, total, production=False, verify_certificate=True)
+> verify_notification(response, order_reference, order_total, production=False, verify_certificate=True)
 
 > verify_certificate(message, signature)
 
@@ -137,12 +138,13 @@ returns two dicts :
 
 returns a string, which is a valid html form ready to be put inside a template for example
 
-### verify_notification(response, reference, total, production=False, verify_certificate=True)
+### verify_notification(response, order_reference, order_total, production=False, verify_certificate=True)
 
-returns two strings in a dict :
+returns three strings in a dict :
 
-- reference, your reference of the payment
-- authorization, the number of authorization that Paybox send on success
+- success, True if the payment is successful
+- status, Paybox status message
+- auth_code, The Authorization Number sent by the Payment Center
 
 ### verify_certificate(message, signature)
 
