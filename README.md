@@ -16,27 +16,25 @@ Complete the **settings_example.py** file and rename it **settings.py**
 
 Calling Paybox from a Django view
 
-    from Paybox import Transaction
+    def paybox_call(request, order_reference):
+     from Paybox import Transaction
+     
+     order = get_object_or_404(Order, reference=order_reference)
+	
+     transaction = Transaction(
+      PBX_TOTAL=order.total,	# total of the transaction, in cents (10€ == 1000) (int)
+      PBX_PORTEUR=order.email,  # customer's email address
+      PBX_TIME=order.date,	# datetime object
+      PBX_CMD=order.reference	# order_reference (str)
+     )
 
-    transaction = Transaction(
-		 PBX_TOTAL='',	# total of the transaction, in cents (10€ == 1000) (int)
-		 PBX_PORTEUR='',# customer's email address
-		 PBX_TIME='',	# datetime object
-		 PBX_CMD=''	# order_reference (str)
-		)
-		
-	if production:
-	 action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
-	else:
-	 action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+     form_values = transaction.post_to_paybox(production=True)
 
-	form_values = transaction.post_to_paybox()
-
-	return render(request, 'payment.html', {
-			'action': action,
-			'mandatory': form_values['mandatory'],
-			'accessory': form_values['accessory']
-		})
+     return render(request, 'payment.html', {
+      'action': form_values['action'],
+      'mandatory': form_values['mandatory'],
+      'accessory': form_values['accessory'],
+     })
 
 How to organise the variables in a Django template
 
@@ -60,19 +58,23 @@ How to organise the variables in a Django template
 	<input type="submit" value="Proceed to payment">
 </form>
 
-Receiving an IPN in a Django view
+Receiving an Instant Payment Notification in a Django view
 
-    from Paybox import Transaction
-
-    transaction = Transaction()
-    notification = transaction.verify_notification(response=request.get_full_path(), order_reference='', order_total='')
-
-    success = notification['success']			# Boolean
-    status = notification['status']   		# Paybox Status Message
-    auth_code = notification['auth_code'] # Authorization Code returned by Payment Center
+    def ipn(request):
+	    from Paybox import Transaction
+	
+	    order = get_object_or_404(Order, order_reference=request.GET.get('RE'))
+	
+	    transaction = Transaction()
+	    notification = transaction.verify_notification(response_url=request.get_full_path(), order_total=order.total)
+	
+	    order.payment = notification['success']	  	# Boolean
+	    order.payment_status = notification['status']   	# Paybox Status Message
+	    order.payment_auth_code = notification['auth_code'] # Authorization Code returned by Payment Center
+	    order.save()
     
-    # Paybox Requires a blank 200 response
-    return HttpResponse('')
+	    # Paybox Requires a blank 200 response
+	    return HttpResponse('')
 
 ## Understanding the Paybox Flow
 
