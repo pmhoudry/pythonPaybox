@@ -32,7 +32,7 @@ class Transaction:
 
 		self.ACCESSORY = {
 			'PBX_REFUSE': '',		# url de retour en cas de refus de paiement
-			'PBX_REPONDRE_A': '',		# url IPN. WARNING. With Trailing slash, otherwise Django 301 to it...
+			'PBX_REPONDRE_A': PBX_REPONDRE_A,		# url IPN. WARNING. With Trailing slash, otherwise Django 301 to it...
 			'PBX_EFFECTUE': '',		# url de retour en cas de succes
 			'PBX_ANNULE': '',		# url de retour en cas d'abandon
 			'PBX_LANGUE': 'FRA', 		# 3 Chars. payment language. GBR for English
