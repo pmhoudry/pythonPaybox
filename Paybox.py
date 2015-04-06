@@ -16,7 +16,7 @@ class Transaction:
 		RESPONSE_CODES	Every response code Paybox may return after a payment attempt
 	"""
 
-	def __init__(self, PBX_TOTAL=None, PBX_CMD=None, PBX_PORTEUR=None, PBX_TIME=None):
+	def __init__(self, PBX_TOTAL=None, PBX_CMD=None, PBX_PORTEUR=None, PBX_TIME=None, PBX_REPONDRE_A=None):
 		self.MANDATORY = {
 			'PBX_SITE': settings.PBX_SITE,			# SITE NUMBER (given by Paybox)
 			'PBX_RANG': settings.PBX_RANG,			# RANG NUMBER (given by Paybox)
@@ -32,7 +32,7 @@ class Transaction:
 
 		self.ACCESSORY = {
 			'PBX_REFUSE': '',		# url de retour en cas de refus de paiement
-			'PBX_REPONDRE_A': '',		# WARNING. With Trailing slash, otherwise Django 301 to it...
+			'PBX_REPONDRE_A': '',		# url IPN. WARNING. With Trailing slash, otherwise Django 301 to it...
 			'PBX_EFFECTUE': '',		# url de retour en cas de succes
 			'PBX_ANNULE': '',		# url de retour en cas d'abandon
 			'PBX_LANGUE': 'FRA', 		# 3 Chars. payment language. GBR for English
