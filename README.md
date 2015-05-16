@@ -22,10 +22,11 @@ Calling Paybox from a Django view
      order = get_object_or_404(Order, reference=order_reference)
 	
      transaction = Transaction(
-      PBX_TOTAL=order.total,	# total of the transaction, in cents (10€ == 1000) (int)
-      PBX_PORTEUR=order.email,  # customer's email address
-      PBX_TIME=order.date,	# datetime object
-      PBX_CMD=order.reference	# order_reference (str)
+	  production = False
+      PBX_TOTAL = order.total,	# total of the transaction, in cents (10€ == 1000) (int)
+      PBX_PORTEUR = order.email,  # customer's email address
+      PBX_TIME = order.date,	# datetime object
+      PBX_CMD = order.reference	# order_reference (str)
      )
 
      form_values = transaction.post_to_paybox(production=True)
@@ -136,11 +137,11 @@ returns two dicts :
 - mandatory, which contains all the mandatory variables unordered
 - accessory, which contains all the other variables you may send to Paybox
 
-### construct_html_form(production=False)
+### construct_html_form()
 
 returns a string, which is a valid html form ready to be put inside a template for example
 
-### verify_notification(response, order_reference, order_total, production=False, verify_certificate=True)
+### verify_notification(response, order_reference, order_total, verify_certificate=True)
 
 returns three strings in a dict :
 

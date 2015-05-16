@@ -16,7 +16,16 @@ class Transaction:
 		RESPONSE_CODES	Every response code Paybox may return after a payment attempt
 	"""
 
-	def __init__(self, PBX_TOTAL=None, PBX_CMD=None, PBX_PORTEUR=None, PBX_TIME=None, PBX_REPONDRE_A=None):
+	def __init__(self, production=False, PBX_TOTAL=None, PBX_CMD=None, PBX_PORTEUR=None, PBX_TIME=None, PBX_REPONDRE_A=None):
+		self.production = production
+		
+		if self.production:
+			self.action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+			self.SECRET = settings.SECRETKEYPROD
+		else:
+			self.action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
+			self.SECRET = settints.SECRETKEYTEST
+		
 		self.MANDATORY = {
 			'PBX_SITE': settings.PBX_SITE,			# SITE NUMBER (given by Paybox)
 			'PBX_RANG': settings.PBX_RANG,			# RANG NUMBER (given by Paybox)
@@ -62,10 +71,8 @@ class Transaction:
 		}
 
 
-	def post_to_paybox(self, production=False):
+	def post_to_paybox(self):
 		""" Returns three variables ready to be integrated in an hidden form, in a template
-		    
-		    :Production: (Boolean), if in production, the url to be called is different
 		"""
 		self.MANDATORY['PBX_TIME'] = self.MANDATORY['PBX_TIME'].isoformat()
 		
@@ -75,35 +82,24 @@ class Transaction:
 		# string to sign. Made of the Mandatory variables in a precise order.
 		tosign = "PBX_SITE=%(PBX_SITE)s&PBX_RANG=%(PBX_RANG)s&PBX_IDENTIFIANT=%(PBX_IDENTIFIANT)s&PBX_TOTAL=%(PBX_TOTAL)s&PBX_DEVISE=%(PBX_DEVISE)s&PBX_CMD=%(PBX_CMD)s&PBX_PORTEUR=%(PBX_PORTEUR)s&PBX_RETOUR=%(PBX_RETOUR)s&PBX_HASH=%(PBX_HASH)s&PBX_TIME=%(PBX_TIME)s" % self.MANDATORY 
 
-		# for the accessory variables, the order is not significant
+		# for the accessory variables, the order is not important
 		for name, value in self.ACCESSORY.items():
 			if value:
 				tosign+=('&'+name+'='+value)
 
-		binary_key = binascii.unhexlify(settings.SECRETKEY)
+		binary_key = binascii.unhexlify(self.SECRET)
 		signature = hmac.new(binary_key, tosign, hashlib.sha512).hexdigest().upper()
 		self.MANDATORY['hmac'] = signature
-		
-		if production:
-			action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
-		else:
-			action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
 
 		return {
-			'action'   : action,
+			'action'   : self.action,
 			'mandatory': self.MANDATORY,
 			'accessory': self.ACCESSORY,
 		}
 
 	def construct_html_form(self, production=False):
 		""" Returns an html form ready to be used (string)
-		    
-		    :Production: (Boolean), if in production, the url to be called is different
 		"""
-		if production:
-			action = 'https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
-		else:
-			action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
 
 		accessory_fields = '\n'.join(["<input type='hidden' name='{0}' value='{1}'>".format(field, self.ACCESSORY[field]) for field in self.ACCESSORY if self.ACCESSORY[field]])
 
@@ -123,9 +119,9 @@ class Transaction:
 			<input type="submit" value="Payer">
 		</form>"""
 
-		return html.format(action=action, mandatory=self.MANDATORY, accessory=accessory_fields)
+		return html.format(action=self.action, mandatory=self.MANDATORY, accessory=accessory_fields)
 
-	def verify_notification(self, response_url, order_total, production=False, verify_certificate=True):
+	def verify_notification(self, response_url, order_total, verify_certificate=True):
 		""" Verifies the notification sent by Paybox to your server.
 		
 		It verifies :
@@ -137,7 +133,6 @@ class Transaction:
 		    
 		:response_url: (string), the full response url with its encoded args
 		:order_total': (int), the total amount required
-		:production: (bool)
 		:verify_certificate: (bool)
 		    
 		It returns a dict which contains three variables:
@@ -153,7 +148,7 @@ class Transaction:
 		if verify_certificate:
 			self.verify_certificate(message=message, signature=query['SIGN'][0])
 			
-		if not production:
+		if not self.production:
 			assert query['AU'][0] == "XXXXXX", "Incorrect Test Authorization Code"
 		else:
 			assert 'RC' in query, "No Response Code Returned"
