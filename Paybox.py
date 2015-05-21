@@ -24,7 +24,7 @@ class Transaction:
 			self.SECRET = settings.SECRETKEYPROD
 		else:
 			self.action = 'https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi'
-			self.SECRET = settints.SECRETKEYTEST
+			self.SECRET = settings.SECRETKEYTEST
 		
 		self.MANDATORY = {
 			'PBX_SITE': settings.PBX_SITE,			# SITE NUMBER (given by Paybox)
