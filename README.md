@@ -64,7 +64,8 @@ Receiving an Instant Payment Notification in a Django view
 
     def ipn(request):
      from Paybox import Transaction
-	
+     
+     # Your order object
      order = get_object_or_404(Order, reference=request.GET.get('RE'))
 	
      transaction = Transaction()
@@ -104,7 +105,7 @@ To set your IPN url you have to contact customer support. Your ipn url MUST NOT 
 
 ## Paybox installation
 
-### Mandatory variables to be sent by the customer computer with the payment request :
+### Mandatory variables to be sent by the customer's browser with the payment request :
 
 	PBX_SITE (given by Paybox)
 	PBX_RANG (Paybox gives you a three digit number, take the last two)
@@ -127,7 +128,7 @@ To set your IPN url you have to contact customer support. Your ipn url MUST NOT 
 
 4. In case of trouble, verify that all your mandatory variables are valid. Especially SITE, RANG, IDENTIFIANT. The app constructs a valid redirection form if all your variables are ok.
 
-5. With corrects values for all the variables, the **method post_to_paybox()** constructs a HMAC that ensure the variables are transmitted unaltered to the Paybox server.
+5. With corrects values for all the variables, the method **post_to_paybox()** constructs a HMAC that ensure the variables are transmitted unaltered to the Paybox server.
 
 ## Methods
 
