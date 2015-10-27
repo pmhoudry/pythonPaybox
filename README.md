@@ -19,10 +19,11 @@ Calling Paybox from a Django view
     def paybox_call(request, order_reference):
      from Paybox import Transaction
      
+     # Your order object
      order = get_object_or_404(Order, reference=order_reference)
 	
      transaction = Transaction(
-	  production = False
+      production = False,
       PBX_TOTAL = order.total,	# total of the transaction, in cents (10€ == 1000) (int)
       PBX_PORTEUR = order.email,  # customer's email address
       PBX_TIME = order.date,	# datetime object
