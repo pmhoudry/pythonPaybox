@@ -178,19 +178,20 @@ class Transaction:
 		"""
 		import base64
 		import hashlib
-		import M2Crypto as m2
-	
+		from Crypto.PublicKey import RSA
+		from Crypto.Signature import PKCS1_v1_5
+		from Crypto.Hash import SHA
+
 		# detach the signature from the message 
 		message_without_sign = message.split("&SIGN=")[0]
 		# decode base64 the signature
 		binary_signature = base64.b64decode(signature)
 		# create a pubkey object
-		pubkey = m2.RSA.load_pub_key(os.path.join(os.path.dirname(__file__), 'pubkey.pem'))
-		# verify the key
-		assert pubkey.check_key(), 'Key Verification Failed'
+		key = RSA.importKey(open(os.path.join(os.path.dirname(__file__), 'pubkey.pem')).read())
 		# digest the message
-		sha1_hash = hashlib.sha1(message_without_sign).digest()
+		h = SHA.new(message_without_sign)
 		# and verify the signature
-		assert pubkey.verify(data=sha1_hash, signature=binary_signature), 'Certificate Verification Failed'
+		verifier = PKCS1_v1_5.new(key)
+		assert verifier.verify(h, binary_signature), 'Signature Verification Failed'
 
 		return True
