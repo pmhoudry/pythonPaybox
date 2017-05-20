@@ -30,7 +30,7 @@ Calling Paybox from a Django view
       PBX_CMD = order.reference	# order_reference (str)
      )
 
-     form_values = transaction.post_to_paybox(production=True)
+     form_values = transaction.post_to_paybox()
 
      return render(request, 'payment.html', {
       'action': form_values['action'],
@@ -91,13 +91,13 @@ Receiving an Instant Payment Notification in a Django view
 	
 > post_to_paybox()
 
-> construct_html_form(production=False)
+> construct_html_form()
 
 5. Your customer pays, and Paybox send a confirmation to your server. You verify the authenticity of the Paybox callback request, set payment to True and send your customer a thank you email.
 
 To set your IPN url you have to contact customer support. Your ipn url MUST NOT trigger any sort of redirection. Beware of 301 between http:// and http://www.
 
-> verify_notification(response, order_reference, order_total, production=False, verify_certificate=True)
+> verify_notification(response, order_reference, order_total, verify_certificate=True)
 
 > verify_certificate(message, signature)
 
