@@ -97,7 +97,7 @@ class Transaction:
 			'accessory': self.ACCESSORY,
 		}
 
-	def construct_html_form(self, production=False):
+	def construct_html_form(self):
 		""" Returns an html form ready to be used (string)
 		"""
 
