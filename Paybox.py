@@ -87,8 +87,12 @@ class Transaction:
 			if value:
 				tosign+=('&'+name+'='+value)
 
-		binary_key = binascii.unhexlify(self.SECRET)
-		signature = hmac.new(binary_key, tosign, hashlib.sha512).hexdigest().upper()
+	        # catch exception if python3 is used 
+                # TODO : test with python2.7, remove the exception and just keep the line 96
+                try:
+                    signature = hmac.new(binary_key, tosign, hashlib.sha512).hexdigest().upper()
+                except:
+                    signature = hmac.new(binary_key, tosign.encode('utf-8'), hashlib.sha512).hexdigest().upper()
 		self.MANDATORY['hmac'] = signature
 
 		return {
